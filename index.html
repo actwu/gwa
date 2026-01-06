@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GWA Obsidian Blue</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg: #000000;
+            --surface: #1a1c1e;
+            --primary: #a8c7fa; /* M3 Electric Blue */
+            --on-primary: #062e6f;
+            --secondary: #c2e7ff;
+            --on-secondary: #001d35;
+            --error: #f2b8b5;
+            --on-error: #601410;
+            --text: #e2e2e6;
+            --text-dim: #8e9199;
+            --input-bg: #282a2d;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 16px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 420px;
+            background: var(--surface);
+            border-radius: 28px;
+            padding: 24px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+            display: flex;
+            flex-direction: column;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            font-weight: 500;
+            margin: 0 0 24px 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--primary);
+        }
+
+        .list-area {
+            max-height: 380px;
+            overflow-y: auto;
+            scroll-snap-type: y mandatory;
+            margin-bottom: 20px;
+            padding-right: 4px;
+        }
+
+        .row {
+            display: grid;
+            grid-template-columns: 1fr 1fr auto;
+            gap: 12px;
+            margin-bottom: 12px;
+            scroll-snap-align: start;
+            background: var(--input-bg);
+            padding: 14px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .field label {
+            font-size: 0.7rem;
+            color: var(--primary);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        input {
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 1.1rem;
+            outline: none;
+            padding: 4px 0;
+            border-bottom: 1px solid var(--text-dim);
+        }
+
+        input:focus {
+            border-bottom: 2px solid var(--primary);
+        }
+
+        /* Pill Buttons */
+        .btn {
+            border: none;
+            border-radius: 100px;
+            padding: 14px 24px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: transform 0.1s ease, opacity 0.2s;
+        }
+
+        /* Adaptive Icon Color */
+        .btn i {
+            color: inherit; 
+            font-size: 1.1rem;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: var(--on-primary);
+        }
+
+        .btn-primary:active {
+            opacity: 0.85;
+            transform: scale(0.97);
+        }
+
+        .btn-delete {
+            background-color: transparent;
+            color: var(--error);
+            padding: 8px;
+        }
+
+        .btn-delete:active {
+            background: rgba(242, 184, 181, 0.15);
+        }
+
+        .result-card {
+            margin-top: auto;
+            background: var(--primary);
+            color: var(--on-primary);
+            border-radius: 24px;
+            padding: 24px;
+            text-align: center;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(168, 199, 250, 0.2);
+        }
+
+        .result-val {
+            font-size: 2.5rem;
+            font-weight: 800;
+        }
+
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-thumb { background: var(--input-bg); border-radius: 10px; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1><i class="fa-solid fa-square-poll-vertical"></i> GWA Flow</h1>
+
+        <div class="list-area" id="list">
+            <div class="row">
+                <div class="field">
+                    <label>Grade</label>
+                    <input type="number" step="0.01" class="grade" placeholder="1.0" oninput="calc()">
+                </div>
+                <div class="field">
+                    <label>Units</label>
+                    <input type="number" step="1" class="unit" placeholder="3" oninput="calc()">
+                </div>
+                <button class="btn btn-delete" onmousedown="removeRow(this)">
+                    <i class="fa-solid fa-trash-can"></i>
+                </button>
+            </div>
+        </div>
+
+        <button class="btn btn-primary" style="margin-bottom: 20px;" onmousedown="addRow()">
+            <i class="fa-solid fa-plus"></i> Add Subject
+        </button>
+
+        <div class="result-card">
+            <span style="font-weight: 700; text-transform: uppercase; font-size: 0.9rem; letter-spacing: 1px;">Current GWA</span>
+            <span class="result-val" id="display">0.00</span>
+        </div>
+    </div>
+
+    <script>
+        function addRow() {
+            const list = document.getElementById('list');
+            const div = document.createElement('div');
+            div.className = 'row';
+            div.innerHTML = `
+                <div class="field">
+                    <label>Grade</label>
+                    <input type="number" step="0.01" class="grade" placeholder="1.0" oninput="calc()">
+                </div>
+                <div class="field">
+                    <label>Units</label>
+                    <input type="number" step="1" class="unit" placeholder="3" oninput="calc()">
+                </div>
+                <button class="btn btn-delete" onmousedown="removeRow(this)">
+                    <i class="fa-solid fa-trash-can"></i>
+                </button>
+            `;
+            list.appendChild(div);
+            div.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        function removeRow(btn) {
+            const rows = document.querySelectorAll('.row');
+            if(rows.length > 1) {
+                btn.closest('.row').remove();
+                calc();
+            }
+        }
+
+        function calc() {
+            const grades = document.querySelectorAll('.grade');
+            const units = document.querySelectorAll('.unit');
+            let totalWP = 0, totalU = 0;
+
+            grades.forEach((g, i) => {
+                const gv = parseFloat(g.value);
+                const uv = parseFloat(units[i].value);
+                if (!isNaN(gv) && !isNaN(uv)) {
+                    totalWP += (gv * uv);
+                    totalU += uv;
+                }
+            });
+
+            const res = totalU > 0 ? (totalWP / totalU).toFixed(2) : "0.00";
+            document.getElementById('display').innerText = res;
+        }
+    </script>
+</body>
+</html>
