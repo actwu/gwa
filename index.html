@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+    <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GWA Obsidian Blue</title>
+    <title>GWA Flow Blue</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -11,10 +11,7 @@
             --surface: #1a1c1e;
             --primary: #a8c7fa; 
             --on-primary: #062e6f;
-            --secondary: #c2e7ff;
-            --on-secondary: #001d35;
             --error: #f2b8b5;
-            --on-error: #601410;
             --text: #e2e2e6;
             --text-dim: #8e9199;
             --input-bg: #282a2d;
@@ -22,7 +19,7 @@
 
         * {
             box-sizing: border-box;
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-family: 'Segoe UI', Roboto, sans-serif;
             -webkit-tap-highlight-color: transparent;
         }
 
@@ -33,148 +30,146 @@
             display: flex;
             justify-content: center;
             min-height: 100vh;
-            padding: 16px;
+            padding: 12px;
         }
 
         .container {
             width: 100%;
-            max-width: 420px;
+            max-width: 450px;
             background: var(--surface);
             border-radius: 28px;
-            padding: 24px;
+            padding: 20px;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
             display: flex;
             flex-direction: column;
-            overflow: hidden; /* Prevent container leak */
+            gap: 16px;
         }
 
         h1 {
-            font-size: 1.5rem;
-            font-weight: 500;
-            margin: 0 0 24px 0;
+            font-size: 1.3rem;
+            margin: 0 0 10px 0;
+            color: var(--primary);
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
+        }
+
+        .term-group {
+            border-left: 3px solid var(--primary);
+            padding-left: 12px;
+            margin-bottom: 8px;
+        }
+
+        .term-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .term-title {
+            font-size: 0.85rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
             color: var(--primary);
         }
 
+        .term-gpa {
+            font-size: 0.75rem;
+            background: rgba(168, 199, 250, 0.15);
+            padding: 4px 10px;
+            border-radius: 100px;
+            color: var(--primary);
+            font-weight: 700;
+        }
+
         .list-area {
-            max-height: 380px;
+            max-height: 200px;
             overflow-y: auto;
             scroll-snap-type: y mandatory;
-            margin-bottom: 20px;
             padding-right: 4px;
         }
 
         .row {
             display: grid;
-            /* Grid handles sizing to prevent overlaps */
-            grid-template-columns: 1fr 1fr 40px; 
-            gap: 12px;
-            margin-bottom: 12px;
+            grid-template-columns: 1.2fr 1fr 40px; 
+            gap: 10px;
+            margin-bottom: 8px;
             scroll-snap-align: start;
             background: var(--input-bg);
-            padding: 12px;
-            border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            align-items: center; /* Vertically centers delete button */
+            padding: 10px;
+            border-radius: 16px;
+            align-items: center;
         }
 
         .field {
             display: flex;
             flex-direction: column;
-            gap: 4px;
-            min-width: 0; /* Critical for grid sizing */
+            min-width: 0;
         }
 
         .field label {
-            font-size: 0.65rem;
+            font-size: 0.6rem;
             color: var(--primary);
             font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
         }
 
         input {
             background: transparent;
             border: none;
             color: white;
-            font-size: 1.1rem;
+            font-size: 1rem;
             outline: none;
-            padding: 4px 0;
+            padding: 2px 0;
             border-bottom: 1px solid var(--text-dim);
-            width: 100%; /* Keeps input inside the 'field' */
+            width: 100%;
         }
 
-        input:focus {
-            border-bottom: 2px solid var(--primary);
-        }
+        input:focus { border-bottom: 2px solid var(--primary); }
 
-        /* Pill Buttons */
         .btn {
             border: none;
             border-radius: 100px;
-            padding: 14px 24px;
-            font-size: 0.95rem;
-            font-weight: 600;
             cursor: pointer;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
-            transition: transform 0.1s ease, opacity 0.2s;
+            transition: all 0.1s;
         }
 
-        .btn i {
-            color: inherit; 
-            font-size: 1.1rem;
-        }
-
-        .btn-primary {
-            background-color: var(--primary);
-            color: var(--on-primary);
-        }
-
-        .btn-primary:active {
-            opacity: 0.85;
-            transform: scale(0.97);
+        .btn-add {
+            padding: 6px 14px;
+            font-size: 0.75rem;
+            background: transparent;
+            color: var(--primary);
+            border: 1px solid var(--primary);
+            margin-top: 4px;
         }
 
         .btn-delete {
-            background-color: transparent;
+            background: transparent;
             color: var(--error);
-            padding: 8px;
             width: 40px;
             height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .btn-delete:active {
-            background: rgba(242, 184, 181, 0.15);
-            border-radius: 50%;
         }
 
         .result-card {
-            margin-top: auto;
             background: var(--primary);
             color: var(--on-primary);
-            border-radius: 24px;
-            padding: 20px;
+            border-radius: 20px;
+            padding: 18px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            
+            margin-top: 10px;
         }
 
-        .result-val {
-            font-size: 2.2rem;
-            font-weight: 800;
-        }
+        .result-val { font-size: 2.2rem; font-weight: 800; }
 
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-thumb { background: var(--input-bg); border-radius: 10px; }
+        ::-webkit-scrollbar { width: 3px; }
+        ::-webkit-scrollbar-thumb { background: var(--text-dim); border-radius: 10px; }
     </style>
 </head>
 <body>
@@ -182,35 +177,50 @@
     <div class="container">
         <h1><i class="fa-solid fa-square-poll-vertical"></i> GWA Flow</h1>
 
-        <div class="list-area" id="list">
-            <div class="row">
-                <div class="field">
-                    <label>Grade</label>
-                    <input type="number" step="0.01" class="grade" placeholder="1.0" oninput="calc()">
+        <div id="groups-wrapper">
+            <section class="term-group" id="group-prelim">
+                <div class="term-header">
+                    <span class="term-title">Prelims</span>
+                    <span class="term-gpa">GPA: <span id="gpa-prelim">0.00</span></span>
                 </div>
-                <div class="field">
-                    <label>Units</label>
-                    <input type="number" step="1" class="unit" placeholder="3" oninput="calc()">
+                <div class="list-area" id="list-prelim"></div>
+                <button class="btn btn-add" onmousedown="addRow('list-prelim')"><i class="fa-solid fa-plus"></i> Add Subject</button>
+            </section>
+
+            <section class="term-group" id="group-midterm">
+                <div class="term-header">
+                    <span class="term-title">Midterms</span>
+                    <span class="term-gpa">GPA: <span id="gpa-midterm">0.00</span></span>
                 </div>
-                <button class="btn btn-delete" onmousedown="removeRow(this)">
-                    <i class="fa-solid fa-trash-can"></i>
-                </button>
-            </div>
+                <div class="list-area" id="list-midterm"></div>
+                <button class="btn btn-add" onmousedown="addRow('list-midterm')"><i class="fa-solid fa-plus"></i> Add Subject</button>
+            </section>
+
+            <section class="term-group" id="group-finals">
+                <div class="term-header">
+                    <span class="term-title">Finals</span>
+                    <span class="term-gpa">GPA: <span id="gpa-finals">0.00</span></span>
+                </div>
+                <div class="list-area" id="list-finals"></div>
+                <button class="btn btn-add" onmousedown="addRow('list-finals')"><i class="fa-solid fa-plus"></i> Add Subject</button>
+            </section>
         </div>
 
-        <button class="btn btn-primary" style="margin-bottom: 20px;" onmousedown="addRow()">
-            <i class="fa-solid fa-plus"></i> Add Subject
-        </button>
-
         <div class="result-card">
-            <span style="font-weight: 700; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1px;">GWA</span>
-            <span class="result-val" id="display">0.00</span>
+            <span style="font-weight: 800; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1px;">Overall GWA</span>
+            <span class="result-val" id="display-overall">0.00</span>
         </div>
     </div>
 
     <script>
-        function addRow() {
-            const list = document.getElementById('list');
+        window.onload = () => {
+            addRow('list-prelim');
+            addRow('list-midterm');
+            addRow('list-finals');
+        };
+
+        function addRow(containerId) {
+            const list = document.getElementById(containerId);
             const div = document.createElement('div');
             div.className = 'row';
             div.innerHTML = `
@@ -227,34 +237,50 @@
                 </button>
             `;
             list.appendChild(div);
-            // Ensure newly added rows are immediately visible
-            div.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            div.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
 
         function removeRow(btn) {
-            const rows = document.querySelectorAll('.row');
-            if(rows.length > 1) {
-                btn.closest('.row').remove();
+            const row = btn.closest('.row');
+            const list = row.parentNode;
+            if (list.children.length > 1) {
+                row.remove();
                 calc();
             }
         }
 
-        function calc() {
-            const grades = document.querySelectorAll('.grade');
-            const units = document.querySelectorAll('.unit');
-            let totalWP = 0, totalU = 0;
+        function calculateTermGPA(listId, displayId) {
+            const list = document.getElementById(listId);
+            const grades = list.querySelectorAll('.grade');
+            const units = list.querySelectorAll('.unit');
+            let wp = 0, u = 0;
 
             grades.forEach((g, i) => {
                 const gv = parseFloat(g.value);
                 const uv = parseFloat(units[i].value);
                 if (!isNaN(gv) && !isNaN(uv)) {
-                    totalWP += (gv * uv);
-                    totalU += uv;
+                    wp += (gv * uv);
+                    u += uv;
                 }
             });
+            
+            const gpa = u > 0 ? (wp / u).toFixed(2) : "0.00";
+            document.getElementById(displayId).innerText = gpa;
+            return { wp, u };
+        }
 
-            const res = totalU > 0 ? (totalWP / totalU).toFixed(2) : "0.00";
-            document.getElementById('display').innerText = res;
+        function calc() {
+            // Calculate individual Term GPAs
+            const prelim = calculateTermGPA('list-prelim', 'gpa-prelim');
+            const midterm = calculateTermGPA('list-midterm', 'gpa-midterm');
+            const finals = calculateTermGPA('list-finals', 'gpa-finals');
+
+            // Calculate Overall GWA
+            const totalWP = prelim.wp + midterm.wp + finals.wp;
+            const totalU = prelim.u + midterm.u + finals.u;
+
+            const overall = totalU > 0 ? (totalWP / totalU).toFixed(2) : "0.00";
+            document.getElementById('display-overall').innerText = overall;
         }
     </script>
 </body>
