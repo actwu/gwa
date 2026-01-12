@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GWA Flow Blue</title>
+    <title>GWA Flow Blue - Expanded</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -38,16 +38,16 @@
             max-width: 450px;
             background: var(--surface);
             border-radius: 28px;
-            padding: 20px;
+            padding: 24px;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            gap: 20px;
         }
 
         h1 {
             font-size: 1.3rem;
-            margin: 0 0 10px 0;
+            margin: 0;
             color: var(--primary);
             display: flex;
             align-items: center;
@@ -57,7 +57,7 @@
         .term-group {
             border-left: 3px solid var(--primary);
             padding-left: 12px;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
         }
 
         .term-header {
@@ -85,22 +85,27 @@
         }
 
         .list-area {
-            max-height: 200px;
-            overflow-y: auto;
-            scroll-snap-type: y mandatory;
-            padding-right: 4px;
+            /* Height now adjusts based on content */
+            height: auto; 
+            margin-bottom: 10px;
         }
 
         .row {
             display: grid;
-            grid-template-columns: 1.2fr 1fr 40px; 
+            /* Added column for the counter */
+            grid-template-columns: 30px 1fr 1fr 40px; 
             gap: 10px;
-            margin-bottom: 8px;
-            scroll-snap-align: start;
+            margin-bottom: 12px;
             background: var(--input-bg);
-            padding: 10px;
+            padding: 12px;
             border-radius: 16px;
             align-items: center;
+        }
+
+        .item-num {
+            font-size: 0.75rem;
+            font-weight: 800;
+            color: var(--text-dim);
         }
 
         .field {
@@ -114,6 +119,7 @@
             color: var(--primary);
             font-weight: 700;
             text-transform: uppercase;
+            margin-bottom: 2px;
         }
 
         input {
@@ -140,12 +146,12 @@
         }
 
         .btn-add {
-            padding: 6px 14px;
+            padding: 8px 16px;
             font-size: 0.75rem;
             background: transparent;
             color: var(--primary);
             border: 1px solid var(--primary);
-            margin-top: 4px;
+            font-weight: 600;
         }
 
         .btn-delete {
@@ -158,18 +164,17 @@
         .result-card {
             background: var(--primary);
             color: var(--on-primary);
-            border-radius: 20px;
-            padding: 18px;
+            border-radius: 24px;
+            padding: 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-top: 10px;
+            position: sticky;
+            bottom: 12px; /* Floats above bottom padding */
         }
 
-        .result-val { font-size: 2.2rem; font-weight: 800; }
-
-        ::-webkit-scrollbar { width: 3px; }
-        ::-webkit-scrollbar-thumb { background: var(--text-dim); border-radius: 10px; }
+        .result-val { font-size: 2.2rem; font-weight: 900; }
     </style>
 </head>
 <body>
@@ -219,11 +224,20 @@
             addRow('list-finals');
         };
 
+        function updateCounters(listId) {
+            const list = document.getElementById(listId);
+            const counters = list.querySelectorAll('.item-num');
+            counters.forEach((span, index) => {
+                span.innerText = `#${index + 1}`;
+            });
+        }
+
         function addRow(containerId) {
             const list = document.getElementById(containerId);
             const div = document.createElement('div');
             div.className = 'row';
             div.innerHTML = `
+                <span class="item-num">#0</span>
                 <div class="field">
                     <label>Grade</label>
                     <input type="number" step="0.01" class="grade" placeholder="1.0" oninput="calc()">
@@ -232,19 +246,20 @@
                     <label>Units</label>
                     <input type="number" step="1" class="unit" placeholder="3" oninput="calc()">
                 </div>
-                <button class="btn btn-delete" onmousedown="removeRow(this)">
+                <button class="btn btn-delete" onmousedown="removeRow(this, '${containerId}')">
                     <i class="fa-solid fa-trash-can"></i>
                 </button>
             `;
             list.appendChild(div);
-            div.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            updateCounters(containerId);
         }
 
-        function removeRow(btn) {
+        function removeRow(btn, containerId) {
             const row = btn.closest('.row');
-            const list = row.parentNode;
+            const list = document.getElementById(containerId);
             if (list.children.length > 1) {
                 row.remove();
+                updateCounters(containerId);
                 calc();
             }
         }
@@ -270,12 +285,10 @@
         }
 
         function calc() {
-            // Calculate individual Term GPAs
             const prelim = calculateTermGPA('list-prelim', 'gpa-prelim');
             const midterm = calculateTermGPA('list-midterm', 'gpa-midterm');
             const finals = calculateTermGPA('list-finals', 'gpa-finals');
 
-            // Calculate Overall GWA
             const totalWP = prelim.wp + midterm.wp + finals.wp;
             const totalU = prelim.u + midterm.u + finals.u;
 
